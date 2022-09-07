@@ -5,6 +5,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    path: 'parking',
+    loadChildren: () => import('./pages/parking/parking.module').then(m => m.ParkingModule)
   }
 ];
 
