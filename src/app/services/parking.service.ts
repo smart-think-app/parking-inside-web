@@ -25,20 +25,25 @@ export class ParkingService {
   constructor(private httpClient: HttpClient) {}
 
   login(request: LoginRequest) {
-    this.httpClient.post<ParkingResponseBase>(environment.parking_url + 
-      "api/internal/v1/auth/login" , request).
-      subscribe(response => {
-        if (response.code == 200) {
-          const parkingInfo:ParkingInfoModel = {
-            token : response.data.token,
-            phone: response.data.phone,
-            username: response.data.username
-          };
-          sessionStorage.setItem(PARKING_ACCESS_TOKEN , response.data.token)
-          this._parkingInfo.next(parkingInfo);
-        }else {
-          window.alert(response.message);
-        }
-      })
+    return new Promise((resolve , reject) => {
+      this.httpClient.post<ParkingResponseBase>(environment.parking_url + 
+        "/api/internal/v1/auth/login" , request).
+        subscribe(response => {
+          if (response.code == 200) {
+            const parkingInfo:ParkingInfoModel = {
+              token : response.data.token,
+              phone: response.data.phone,
+              username: response.data.username
+            };
+            sessionStorage.setItem(PARKING_ACCESS_TOKEN , response.data.token)
+            this._parkingInfo.next(parkingInfo);
+            resolve(true);
+          }else {
+            reject(response.message);
+          }
+        },err => {
+          reject(err)
+        })
+    })
   }
 }

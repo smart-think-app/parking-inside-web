@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  parking_url: "https://parkvn.duckdns.org"
+  parking_url: "http://localhost:1323"
 };
 
 /*
