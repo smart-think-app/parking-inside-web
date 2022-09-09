@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ParkingService } from 'src/app/services/parking.service';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -17,7 +18,8 @@ import { ParkingService } from 'src/app/services/parking.service';
     FormsModule,
     ReactiveFormsModule,
     LoginRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule
   ],
   providers:[
     ParkingService
