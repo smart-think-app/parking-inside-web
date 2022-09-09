@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource} from '@angular/material/table';
 import { ParkingModel } from 'src/app/model/proxy_model/parking/parking_model';
+import { Router } from '@angular/router';
 
 
 const ELEMENT_DATA: ParkingModel[] = [
@@ -23,6 +24,9 @@ export class SearchComponent implements OnInit {
   dataSource = new MatTableDataSource<ParkingModel>(ELEMENT_DATA);
   selection = new SelectionModel<ParkingModel>(true, []);
 
+  add(){
+    this.router.navigate(['parking/add'])
+  }
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
@@ -44,7 +48,7 @@ export class SearchComponent implements OnInit {
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.index + 1}`;
   }
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }

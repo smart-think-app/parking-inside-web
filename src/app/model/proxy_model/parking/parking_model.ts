@@ -22,3 +22,13 @@ export interface ParkingModel{
     status: number,
     index:number
 }
+
+export interface ParkingCity{
+    id: number,
+    name: string
+}
+
+export interface ParkingTypes{
+    value: number,
+    name: string
+}
