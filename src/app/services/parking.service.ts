@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   LoginRequest,
-  ParkingInfoModel,
+  AuthInfoModel,
   ParkingResponseBase,
 } from './../model/proxy_model/parking/parking_model';
 import { environment } from 'src/environments/environment';
@@ -14,7 +14,7 @@ import { PARKING_ACCESS_TOKEN } from '../core/constants/constants';
 
 export class ParkingService {
 
-  private _parkingInfo: BehaviorSubject<ParkingInfoModel> = new BehaviorSubject({
+  private _parkingInfo: BehaviorSubject<AuthInfoModel> = new BehaviorSubject({
     token:"",
     phone:"",
     username:""
@@ -31,7 +31,7 @@ export class ParkingService {
         subscribe({
           next: (resp) => {
             if (resp.code == 200) {
-              const parkingInfo:ParkingInfoModel = {
+              const parkingInfo:AuthInfoModel = {
                 token : resp.data.token,
                 phone: resp.data.phone,
                 username: resp.data.username

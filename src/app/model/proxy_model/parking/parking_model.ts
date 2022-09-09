@@ -9,8 +9,16 @@ export interface ParkingResponseBase {
     message: string;
 }
 
-export interface ParkingInfoModel {
+export interface AuthInfoModel {
     token: string;
     phone: string;
     username: string;
   }
+
+export interface ParkingModel{
+    id: number,
+    parking_name: string,
+    parking_phone: string,
+    status: number,
+    index:number
+}
