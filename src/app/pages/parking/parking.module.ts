@@ -13,8 +13,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { ParkingService } from 'src/app/services/parking.service';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ActionIconMenuComponent } from './search/components/action-icon-menu/action-icon-menu.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
 @NgModule({
-  declarations: [SearchComponent, AddComponent],
+  declarations: [SearchComponent, AddComponent, ActionIconMenuComponent],
   imports: [
     ParkingRoutingModule,
     CommonModule,
@@ -27,7 +30,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     FormsModule,
     HttpClientModule,
     MatGridListModule,
-    MatDialogModule
+    MatDialogModule,
+    MatMenuModule,
+    MatIconModule
   ],
   providers:[
     ParkingService

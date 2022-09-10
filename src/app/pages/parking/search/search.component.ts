@@ -20,7 +20,7 @@ const ELEMENT_DATA: ParkingModel[] = [
 })
 export class SearchComponent implements OnInit {
 
-  displayedColumns: string[] = ['select','id', 'name', 'phone', 'status'];
+  displayedColumns: string[] = ['select','id', 'name', 'phone', 'status','action'];
   dataSource = new MatTableDataSource<ParkingModel>(ELEMENT_DATA);
   selection = new SelectionModel<ParkingModel>(true, []);
 
