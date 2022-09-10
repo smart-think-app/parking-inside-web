@@ -46,33 +46,25 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>City</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let city of cities" [value]="city.id">
-          {{ city.name }}
+      <mat-select [(ngModel)]="selectedCity" name="city" (selectionChange)="initFilterDistrictByCity()">
+        <mat-option *ngFor="let city of cities" [value]="city">
+          {{ city.city_name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <mat-label>City</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let city of cities" [value]="city.id">
-          {{ city.name }}
+      <mat-label>Districts</mat-label>
+      <mat-select [(ngModel)]="selectedDistrict" name="district" (selectionChange)="initFilterWardByDistrict()">
+        <mat-option *ngFor="let district of districts" [value]="district">
+          {{ district.district_name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <mat-label>City</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let city of cities" [value]="city.id">
-          {{ city.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>City</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let city of cities" [value]="city.id">
-          {{ city.name }}
+      <mat-label>Wards</mat-label>
+      <mat-select [(ngModel)]="selectedWard" name="ward">
+        <mat-option *ngFor="let ward of wards" [value]="ward">
+          {{ ward.ward_name }}
         </mat-option>
       </mat-select>
     </mat-form-field>

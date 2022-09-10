@@ -24,10 +24,21 @@ export interface ParkingModel{
 }
 
 export interface ParkingCity{
-    id: number,
-    name: string
+    city_id: number,
+    city_name: string
 }
 
+export interface ParkingDistrict{
+    city: ParkingCity,
+    district_id: number,
+    district_name: string
+}
+
+export interface ParkingWard{
+    district: ParkingDistrict,
+    ward_id:number,
+    ward_name: string
+}
 export interface ParkingTypes{
     value: number,
     name: string

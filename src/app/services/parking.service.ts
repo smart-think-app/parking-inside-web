@@ -4,6 +4,9 @@ import {
   LoginRequest,
   AuthInfoModel,
   ParkingResponseBase,
+  ParkingCity,
+  ParkingDistrict,
+  ParkingWard,
 } from './../model/proxy_model/parking/parking_model';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
@@ -14,14 +17,28 @@ import { PARKING_ACCESS_TOKEN } from '../core/constants/constants';
 
 export class ParkingService {
 
+  private _cityData: BehaviorSubject<ParkingCity[]> = new BehaviorSubject<ParkingCity[]>([]);
+  private _districtData: BehaviorSubject<ParkingDistrict[]> = new BehaviorSubject<ParkingDistrict[]>([]);
+  private _wardData: BehaviorSubject<ParkingWard[]> = new BehaviorSubject<ParkingWard[]>([]);
   private _parkingInfo: BehaviorSubject<AuthInfoModel> = new BehaviorSubject({
     token:"",
     phone:"",
     username:""
   });
+
   get getToken() {
     return this._parkingInfo.asObservable();
   }
+  get getCity() {
+    return this._cityData.asObservable();
+  }
+  get getDistrict(){
+    return this._districtData.asObservable();
+  }
+  get getWard(){
+    return this._wardData.asObservable();
+  }
+
   constructor(private httpClient: HttpClient) {}
 
   login(request: LoginRequest) {
@@ -51,5 +68,91 @@ export class ParkingService {
           }
         })
     })
+  }
+
+  getListCitiesAPI() {
+    return this.httpClient.get<ParkingResponseBase>(environment.parking_url + "/api/public/v1/location/cities").
+    subscribe(
+      {
+        next: (resp) =>{
+          if (resp.code == 200) {
+            this._cityData.next(resp.data != null? resp.data.map((item:any) =>{
+              const city: ParkingCity = {
+                city_id: item.city_id,
+                city_name: item.city_name
+              };
+              return city;
+            }): []);
+          }
+        },
+        error: (e) => {
+          console.log(e)
+        },
+        complete: () => {
+          console.log("Complete API Get City")
+        }
+      }
+    )
+  }
+
+  getListDistrictsAPI(cityId: number) {
+    return this.httpClient.get<ParkingResponseBase>(environment.parking_url + 
+      `/api/public/v1/location/cities/${cityId}/districts`).
+    subscribe(
+      {
+        next: (resp) =>{
+          if (resp.code == 200) {
+            this._districtData.next(resp.data != null? resp.data.map((item:any) =>{
+              const district: ParkingDistrict = {
+                city: {city_name: item.city_name,city_id: item.city_id},
+                district_id: item.district_id,
+                district_name: item.district_name
+              };
+              return district;
+            }): []);
+          }
+        },
+        error: (e) => {
+          console.log(e)
+        },
+        complete: () => {
+          console.log("Complete API Get District By City ID")
+        }
+      }
+    )
+  }
+
+  getListWardsAPI(cityId: number,districtId: number) {
+    return this.httpClient.get<ParkingResponseBase>(environment.parking_url + 
+      `/api/public/v1/location/cities/${cityId}/districts/${districtId}/wards`).
+    subscribe(
+      {
+        next: (resp) =>{
+          if (resp.code == 200) {
+            this._wardData.next(resp.data != null? resp.data.map((item:any) =>{
+              const ward: ParkingWard = {
+                district: {
+                  city:{
+                    city_id: item.city_id,
+                    city_name: item.city_name,
+                  },
+                  district_name: item.district_name,
+                  district_id: item.district_id,
+                },
+                ward_id: item.ward_id,
+                ward_name: item.ward_name
+              };
+              return ward;
+            }): []);
+          }
+        },
+        error: (e) => {
+          console.log(e)
+        },
+        complete: () => {
+          console.log("Complete API Get Wards")
+        }
+      }
+    )
   }
 }

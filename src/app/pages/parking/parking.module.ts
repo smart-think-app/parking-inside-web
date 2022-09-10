@@ -9,6 +9,8 @@ import { AddComponent } from './add/add.component';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { ParkingService } from 'src/app/services/parking.service';
 @NgModule({
   declarations: [SearchComponent, AddComponent],
   imports: [
@@ -21,6 +23,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSelectModule,
     ReactiveFormsModule,
     FormsModule,
+    HttpClientModule,
+  ],
+  providers:[
+    ParkingService
   ]
 })
 export class ParkingModule { }
