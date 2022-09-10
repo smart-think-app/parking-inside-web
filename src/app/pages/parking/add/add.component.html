@@ -1,17 +1,17 @@
-<form class="example-form">
+<form class="add-form" [formGroup]="addParkingForm">
   <table class="example-full-width" cellspacing="0">
     <tr>
       <td>
-        <mat-form-field class="example-full-width" appearance="fill">
+        <mat-form-field class="example-full-width" appearance="fill" >
           <mat-label>Parking Name</mat-label>
-          <input matInput />
+          <input matInput formControlName="parkingNameForm" />
         </mat-form-field>
       </td>
       <td>
         <mat-form-field class="example-full-width" appearance="fill">
           <mat-label>Parking Phone</mat-label>
           <span matPrefix>+84 &nbsp;</span>
-          <input type="tel" matInput placeholder="0946515847" />
+          <input type="tel" matInput placeholder="0946515847" formControlName="parkingPhoneForm"/>
         </mat-form-field>
       </td>
     </tr>
@@ -22,14 +22,14 @@
       <td>
         <mat-form-field class="example-full-width" appearance="fill">
           <mat-label>Owner Name</mat-label>
-          <input matInput />
+          <input matInput formControlName="ownerNameForm" />
         </mat-form-field>
       </td>
       <td>
         <mat-form-field class="example-full-width" appearance="fill">
           <mat-label>Owner Phone</mat-label>
           <span matPrefix>+84 &nbsp;</span>
-          <input type="tel" matInput placeholder="0946515847" />
+          <input type="tel" matInput placeholder="0946515847" formControlName="ownerPhoneForm" />
         </mat-form-field>
       </td>
     </tr>
@@ -38,7 +38,7 @@
   <p>
     <mat-form-field class="example-full-width" appearance="fill">
       <mat-label>Address</mat-label>
-      <textarea matInput placeholder="Ex. 100 Main St"></textarea>
+      <textarea matInput placeholder="Ex. 184/4 Dang Van Ngu Street" formControlName="addressForm"></textarea>
     </mat-form-field>
   </p>
 
@@ -46,24 +46,24 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>City</mat-label>
-      <mat-select [(ngModel)]="selectedCity" name="city" (selectionChange)="initFilterDistrictByCity()">
-        <mat-option *ngFor="let city of cities" [value]="city">
+      <mat-select formControlName="cityForm" name="city" (selectionChange)="initFilterDistrictByCity()">
+        <mat-option *ngFor="let city of cities" [value]="city.city_id">
           {{ city.city_name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Districts</mat-label>
-      <mat-select [(ngModel)]="selectedDistrict" name="district" (selectionChange)="initFilterWardByDistrict()">
-        <mat-option *ngFor="let district of districts" [value]="district">
+      <mat-select formControlName="districtForm" name="district" (selectionChange)="initFilterWardByDistrict()">
+        <mat-option *ngFor="let district of districts" [value]="district.district_id">
           {{ district.district_name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Wards</mat-label>
-      <mat-select [(ngModel)]="selectedWard" name="ward">
-        <mat-option *ngFor="let ward of wards" [value]="ward">
+      <mat-select formControlName="wardForm" name="ward">
+        <mat-option *ngFor="let ward of wards" [value]="ward.ward_id">
           {{ ward.ward_name }}
         </mat-option>
       </mat-select>
@@ -82,19 +82,19 @@
       <td>
         <mat-form-field class="example-full-width" appearance="fill">
           <mat-label>Lat</mat-label>
-          <input matInput />
+          <input matInput formControlName="latForm"/>
         </mat-form-field>
       </td>
       <td>
         <mat-form-field class="example-full-width" appearance="fill">
           <mat-label>Lng</mat-label>
-          <input matInput />
+          <input matInput formControlName="lngForm"/>
         </mat-form-field>
       </td>
     </tr>
   </table>
   <div class="example-button-row">
-    <button mat-raised-button class="blue-btn">Add</button>
+    <button mat-raised-button class="blue-btn" [disabled]="addParkingForm.invalid" (click)="add()">Add</button>
     <button mat-raised-button class="blue-btn">Back</button>
     <button mat-raised-button class="blue-btn">Reset</button>
   </div>

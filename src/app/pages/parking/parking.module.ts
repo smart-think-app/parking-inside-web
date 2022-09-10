@@ -11,6 +11,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ParkingService } from 'src/app/services/parking.service';
+import {MatGridListModule} from '@angular/material/grid-list';
 @NgModule({
   declarations: [SearchComponent, AddComponent],
   imports: [
@@ -24,6 +25,7 @@ import { ParkingService } from 'src/app/services/parking.service';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
+    MatGridListModule
   ],
   providers:[
     ParkingService
