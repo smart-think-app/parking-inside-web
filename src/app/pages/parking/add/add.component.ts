@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
+  AddParkingRequest,
   ParkingCity,
   ParkingDistrict,
   ParkingTypes,
 } from 'src/app/model/proxy_model/parking/parking_model';
 import { ParkingService } from 'src/app/services/parking.service';
+import { environment } from 'src/environments/environment';
 import { ParkingWard } from './../../../model/proxy_model/parking/parking_model';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogData, ErrorAPICodeData } from 'src/app/model/component_model/alert_dialog_data';
+import { ParkingAlertDialog } from 'src/app/core/components/alert_dialog/alert_dialog.component';
 
 @Component({
   selector: 'app-add',
@@ -30,9 +36,9 @@ export class AddComponent implements OnInit {
   cityForm = new FormControl<number>(0,[Validators.required])
   districtForm = new FormControl<number>(0,[Validators.required])
   wardForm = new FormControl<number>(0,[Validators.required])
-  parkingTypesForm = new FormControl('',[Validators.required])
-  latForm = new FormControl('',[Validators.required])
-  lngForm = new FormControl('',[Validators.required])
+  parkingTypesForm = new FormControl<number[]>([],[Validators.required])
+  latForm = new FormControl<number>(0,[Validators.required])
+  lngForm = new FormControl<number>(0,[Validators.required])
 
   addParkingForm = this.formBuilder.group({
     parkingNameForm: this.parkingNameForm,
@@ -50,6 +56,8 @@ export class AddComponent implements OnInit {
   constructor(
     private _parkingService: ParkingService,
     private formBuilder:FormBuilder,
+    private _router: Router,
+    public dialog: MatDialog,
     ) {}
   
   ngOnInit(): void {
@@ -97,6 +105,48 @@ export class AddComponent implements OnInit {
     }
   }
   add(){
-    console.log(this.addParkingForm.value.parkingTypesForm)
+    const request: AddParkingRequest = {
+      address: this.addParkingForm.value.addressForm as string,
+      ward_id: this.addParkingForm.value.wardForm as number,
+      city_id: this.addParkingForm.value.cityForm as number,
+      owner_phone: this.addParkingForm.value.ownerPhoneForm as string,
+      parking_phone: this.addParkingForm.value.parkingPhoneForm as string,
+      owner_name: this.addParkingForm.value.ownerNameForm as string,
+      district_id: this.addParkingForm.value.districtForm as number,
+      lat: this.addParkingForm.value.latForm as number,
+      lng: this.addParkingForm.value.lngForm as number,
+      parking_name: this.addParkingForm.value.parkingNameForm as string,
+      parking_types: this.addParkingForm.value.parkingTypesForm as number[],
+      region_id: 1
+    }
+
+    this._parkingService.AddParkingAPI(request).then((result: ErrorAPICodeData) =>{
+      let alertDialogModel: DialogData = {
+        title:"Title",
+        message:"msg"
+      }
+      if (result.code == 200) {
+        alertDialogModel.title = 'Success'
+        alertDialogModel.message = 'Create parking success, go to the listing page to check and approve'
+      } else {
+        alertDialogModel.title = 'Failure'
+        alertDialogModel.message = `${result.message} - [${result.code}]`
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    }).catch(err => {
+      let alertDialogModel: DialogData = {
+        title:"Failure",
+        message:"Create parking fail, contact Tran Quoc Huy"
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    })
+  }
+
+  back(){
+    this._router.navigate(['/parking'])
   }
 }

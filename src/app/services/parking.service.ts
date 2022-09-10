@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   LoginRequest,
   AuthInfoModel,
@@ -7,10 +7,12 @@ import {
   ParkingCity,
   ParkingDistrict,
   ParkingWard,
+  AddParkingRequest,
 } from './../model/proxy_model/parking/parking_model';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
 import { PARKING_ACCESS_TOKEN } from '../core/constants/constants';
+import { ErrorAPICodeData } from '../model/component_model/alert_dialog_data';
 @Injectable({
   providedIn: 'root',
 })
@@ -154,5 +156,49 @@ export class ParkingService {
         }
       }
     )
+  }
+
+  private _initHeader() {
+    const token = sessionStorage.getItem(PARKING_ACCESS_TOKEN)
+    const httpHeader = new HttpHeaders().
+    set('content-type', 'application/json').
+    set('Access-Control-Allow-Origin', '*').
+    set('Authorization' , token as string);
+    return httpHeader
+  }
+
+  AddParkingAPI(request:AddParkingRequest){
+    return new Promise<ErrorAPICodeData>((resolve , reject) =>{
+      this.httpClient.post<ParkingResponseBase>(environment.parking_url + `/api/internal/v1/add`,request,{
+        headers: this._initHeader()
+      }).subscribe({
+        next: (resp) => {
+          console.log(resp)
+          if (resp.code == 200) {
+            resolve({
+              message: "success",
+              code: 200
+            })
+          }else {
+            resolve({
+              message: resp.message,
+              code: resp.code
+            })
+          }
+        },
+        error: (e) => {
+          console.log(e)
+          if (e?.error?.code != 200) {
+            resolve({
+              message: e?.error?.message,
+              code: e?.error?.code
+            })
+          }
+        },
+        complete: () => {
+          console.log("Complete API Add Parking")
+        }
+      })
+    })
   }
 }

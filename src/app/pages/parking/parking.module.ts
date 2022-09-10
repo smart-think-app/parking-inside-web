@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ParkingService } from 'src/app/services/parking.service';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { MatDialogModule } from '@angular/material/dialog';
 @NgModule({
   declarations: [SearchComponent, AddComponent],
   imports: [
@@ -25,7 +26,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    MatGridListModule
+    MatGridListModule,
+    MatDialogModule
   ],
   providers:[
     ParkingService

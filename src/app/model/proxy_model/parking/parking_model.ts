@@ -43,3 +43,18 @@ export interface ParkingTypes{
     value: number,
     name: string
 }
+
+export interface AddParkingRequest {
+    address: string,
+    ward_id: number,
+    city_id: number,
+    owner_phone: string,
+    parking_phone: string,
+    owner_name: string,
+    district_id: number,
+    region_id: number,
+    lat: number,
+    lng: number,
+    parking_name: string,
+    parking_types:number[]
+}
