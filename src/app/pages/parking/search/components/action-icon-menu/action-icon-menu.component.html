@@ -2,23 +2,23 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item>
+    <button mat-menu-item [disabled]="!ActionRoles.CanApprove">
       <mat-icon>dialpad</mat-icon>
       <span>Approve</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [disabled]="!ActionRoles.CanClose">
       <mat-icon>voicemail</mat-icon>
       <span>Close</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [disabled]="!ActionRoles.CanDenied">
       <mat-icon>notifications_off</mat-icon>
       <span>Denied</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [disabled]="!ActionRoles.CanBlock">
       <mat-icon>notifications_off</mat-icon>
       <span>Block</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [disabled]="!ActionRoles.CanRemove">
       <mat-icon>notifications_off</mat-icon>
       <span>Remove</span>
     </button>

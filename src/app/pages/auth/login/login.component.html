@@ -1,16 +1,16 @@
-<div class="form">
-  <form class="child-form" [formGroup]="loginForm">
-    <div class="title">Welcome</div>
-  <div class="subtitle">Parking Inside Management!</div>
-  <div class="input-container ic1">
-    <input id="phone" class="input" type="text" placeholder=" " formControlName="phoneForm"/>
-    <div class="cut"></div>
-    <label for="phone" class="placeholder">Phone</label>
+<div class="form-login">
+  <form class="child-form-login" [formGroup]="loginForm">
+    <div class="title-login">Welcome</div>
+  <div class="subtitle-login">Parking Inside Management!</div>
+  <div class="input-container-login ic1-login">
+    <input id="phone" class="input-login" type="text" placeholder=" " formControlName="phoneForm"/>
+    <div class="cut-login"></div>
+    <label for="phone" class="placeholder-login">Phone</label>
   </div>
-  <div class="input-container ic2">
-    <input id="password" class="input" type="password" placeholder=" " formControlName="passwordForm"/>
-    <div class="cut"></div>
-    <label for="password" class="placeholder">Password</label>
+  <div class="input-container-login ic2-login">
+    <input id="password" class="input-login" type="password" placeholder=" " formControlName="passwordForm"/>
+    <div class="cut-login"></div>
+    <label for="password" class="placeholder-login">Password</label>
   </div>
   <button type="button" class="btn-login" (click)="login()" [disabled]="loginForm.invalid">submit</button>
 </form>

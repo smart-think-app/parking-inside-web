@@ -16,11 +16,21 @@ export interface AuthInfoModel {
   }
 
 export interface ParkingModel{
-    id: number,
-    parking_name: string,
-    parking_phone: string,
-    status: number,
-    index:number
+    Index: number,
+    Id: number,
+    ParkingName: string,
+    ParkingPhone: string,
+    Status: number,
+    StatusDisplay: string,
+    ActionRoles: ParkingActionRoles
+}
+
+export interface ParkingModelPaging {
+    IsLastPage: boolean
+    PageLimit: number,
+    PageIndex: number,
+    Total: number,
+    Parks: ParkingModel[],
 }
 
 export interface ParkingCity{
@@ -57,4 +67,17 @@ export interface AddParkingRequest {
     lng: number,
     parking_name: string,
     parking_types:number[]
+}
+
+export interface ParkingActionRoles {
+    CanApprove: boolean
+    CanClose: boolean
+    CanRemove: boolean
+    CanBlock: boolean
+    CanDenied: boolean
+}
+
+export interface ListParkingRequest {
+    page_index: number,
+    page_limit: number
 }

@@ -3,14 +3,10 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource} from '@angular/material/table';
 import { ParkingModel } from 'src/app/model/proxy_model/parking/parking_model';
 import { Router } from '@angular/router';
+import { ParkingModelPaging } from './../../../model/proxy_model/parking/parking_model';
+import { ParkingService } from 'src/app/services/parking.service';
+import { PageEvent } from '@angular/material/paginator';
 
-
-const ELEMENT_DATA: ParkingModel[] = [
-  {id: 1, parking_name: 'Hydrogen', parking_phone: "1.0079", status: 1,index:1,},
-  {id: 1, parking_name: 'Hydrogen', parking_phone: "1.0079", status: 1,index:2,},
-  {id: 1, parking_name: 'Hydrogen', parking_phone: "1.0079", status: 1,index:3,},
-  {id: 1, parking_name: 'Hydrogen', parking_phone: "1.0079", status: 1,index:4,},
-];
 
 
 @Component({
@@ -20,10 +16,22 @@ const ELEMENT_DATA: ParkingModel[] = [
 })
 export class SearchComponent implements OnInit {
 
-  displayedColumns: string[] = ['select','id', 'name', 'phone', 'status','action'];
-  dataSource = new MatTableDataSource<ParkingModel>(ELEMENT_DATA);
+  parkingPaging: ParkingModelPaging = {
+    IsLastPage: false,
+    PageIndex:0,
+    PageLimit:0,
+    Total:0,
+    Parks:[]
+  }
+  displayedColumns: string[] = ['select', 'name','id' ,'phone', 'status','action'];
+  dataSource = new MatTableDataSource<ParkingModel>([]);
+  pageSizeOptions: number[] = [5, 10, 25, 100];
   selection = new SelectionModel<ParkingModel>(true, []);
-
+  pageEvent: PageEvent = {
+    length: this.parkingPaging.Total,
+    pageSize: this.pageSizeOptions[0],
+    pageIndex: 1
+  };
   add(){
     this.router.navigate(['parking/add'])
   }
@@ -46,11 +54,36 @@ export class SearchComponent implements OnInit {
     if (!row) {
       return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.index + 1}`;
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.Index + 1}`;
   }
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private _parkingService: ParkingService
+    ) { }
 
   ngOnInit(): void {
+    this._parkingService.getParkingPaging.subscribe((data) => {
+      this.parkingPaging = data;
+      this.dataSource.data = this.parkingPaging.Parks
+      console.log(this.dataSource.data)
+    })
+    this.initPaging()
+  }
+
+  initPaging() {
+    console.log(this.pageEvent)
+    this._parkingService.GetListParkingAPI({
+      page_index: this.pageEvent.pageIndex,
+      page_limit: this.pageEvent.pageSize
+    })
+  }
+
+  public changePaging(event: PageEvent) {
+    this._parkingService.GetListParkingAPI({
+      page_index: event.pageIndex + 1,
+      page_limit: event.pageSize
+    })
+    return event;
   }
 
 }

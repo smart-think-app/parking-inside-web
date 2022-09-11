@@ -16,6 +16,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ActionIconMenuComponent } from './search/components/action-icon-menu/action-icon-menu.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
+import {MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
   declarations: [SearchComponent, AddComponent, ActionIconMenuComponent],
   imports: [
@@ -32,7 +33,8 @@ import {MatIconModule} from '@angular/material/icon';
     MatGridListModule,
     MatDialogModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatPaginatorModule
   ],
   providers:[
     ParkingService

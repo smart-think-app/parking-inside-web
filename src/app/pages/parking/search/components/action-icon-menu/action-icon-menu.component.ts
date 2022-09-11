@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ParkingActionRoles } from 'src/app/model/proxy_model/parking/parking_model';
+import { CanActivate } from '@angular/router';
 
 @Component({
   selector: 'parking-action-icon-menu',
@@ -7,6 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ActionIconMenuComponent implements OnInit {
 
+  @Input() ActionRoles: ParkingActionRoles = {
+    CanApprove: false,
+    CanBlock: false,
+    CanClose: false,
+    CanDenied: false,
+    CanRemove: false,
+  }
   constructor() { }
 
   ngOnInit(): void {
