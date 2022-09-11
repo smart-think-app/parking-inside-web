@@ -22,6 +22,12 @@
       <mat-icon>block</mat-icon>
       <span>Block</span>
     </button>
+    <button mat-menu-item 
+    [disabled]="!ActionRoles.CanReopen"
+    (click)="reopen()">
+      <mat-icon>autorenew</mat-icon>
+      <span>Reopen</span>
+    </button>
     <button mat-menu-item [disabled]="!ActionRoles.CanRemove">
       <mat-icon>delete_forever</mat-icon>
       <span>Remove</span>

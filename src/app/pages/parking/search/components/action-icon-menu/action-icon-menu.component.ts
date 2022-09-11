@@ -19,6 +19,7 @@ export class ActionIconMenuComponent implements OnInit {
     CanClose: false,
     CanDenied: false,
     CanRemove: false,
+    CanReopen: false
   }
 
   @Output() RefreshFlag = new EventEmitter<boolean>()
@@ -68,6 +69,34 @@ export class ActionIconMenuComponent implements OnInit {
       if (result.code == 200) {
         alertDialogModel.title = 'Success'
         alertDialogModel.message = 'Close parking success'
+        this.RefreshFlag.emit(true)
+      } else {
+        alertDialogModel.title = 'Failure'
+        alertDialogModel.message = `${result.message} - [${result.code}]`
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    }).catch(err => {
+      let alertDialogModel: DialogData = {
+        title:"Failure",
+        message:"Create parking fail, contact Tran Quoc Huy"
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    })
+  }
+
+  reopen() {
+    let alertDialogModel: DialogData = {
+      title:"Title",
+      message:"msg"
+    }
+    this._parkingService.ReopenAPI(this.ParkingId).then((result) => {
+      if (result.code == 200) {
+        alertDialogModel.title = 'Success'
+        alertDialogModel.message = 'Reopen parking success'
         this.RefreshFlag.emit(true)
       } else {
         alertDialogModel.title = 'Failure'

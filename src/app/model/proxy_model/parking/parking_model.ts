@@ -75,6 +75,7 @@ export interface ParkingActionRoles {
     CanRemove: boolean
     CanBlock: boolean
     CanDenied: boolean
+    CanReopen: boolean
 }
 
 export interface ListParkingRequest {
