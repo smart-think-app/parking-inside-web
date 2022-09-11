@@ -116,4 +116,32 @@ export class ActionIconMenuComponent implements OnInit {
     })
   }
 
+  syncESOne() {
+    let alertDialogModel: DialogData = {
+      title:"Title",
+      message:"msg"
+    }
+    this._parkingService.SyncOneESAPI(this.ParkingId).then((result) => {
+      if (result.code == 200) {
+        alertDialogModel.title = 'Success'
+        alertDialogModel.message = 'Sync parking success'
+        this.RefreshFlag.emit(true)
+      } else {
+        alertDialogModel.title = 'Failure'
+        alertDialogModel.message = `${result.message} - [${result.code}]`
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    }).catch(err => {
+      let alertDialogModel: DialogData = {
+        title:"Failure",
+        message:"Create parking fail, contact Tran Quoc Huy"
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    })
+  }
+
 }

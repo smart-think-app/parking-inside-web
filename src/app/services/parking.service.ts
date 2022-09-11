@@ -438,4 +438,74 @@ export class ParkingService {
         })
     })
   }
+
+  SyncMultiESAPI(parkingIds: number[]) {
+    return new Promise<APICodeData>((resolve , reject) => {
+      this.httpClient
+        .put<ParkingResponseBase>(
+          environment.parking_url + `/api/internal/v1/sync-multi-es/${parkingIds.join(",")}`,null,
+          {
+            headers: this._initHeader(),
+          }
+        ).subscribe({
+          next: (resp) => {
+            if (resp.code == 200) {
+              resolve({
+                code: 200,
+                message:"Success"
+              }) 
+            } else {
+              resolve({
+                code: resp.code,
+                message:resp.message
+              }) 
+            }
+          },
+          error: (e) => {
+            console.log(e);
+            if (e?.error?.code != 200) {
+              resolve({
+                message: e?.error?.message,
+                code: e?.error?.code,
+              });
+            }
+          }
+        })
+    })
+  }
+
+  SyncOneESAPI(parkingId: number) {
+    return new Promise<APICodeData>((resolve , reject) => {
+      this.httpClient
+        .put<ParkingResponseBase>(
+          environment.parking_url + `/api/internal/v1/${parkingId}/sync-es`,null,
+          {
+            headers: this._initHeader(),
+          }
+        ).subscribe({
+          next: (resp) => {
+            if (resp.code == 200) {
+              resolve({
+                code: 200,
+                message:"Success"
+              }) 
+            } else {
+              resolve({
+                code: resp.code,
+                message:resp.message
+              }) 
+            }
+          },
+          error: (e) => {
+            console.log(e);
+            if (e?.error?.code != 200) {
+              resolve({
+                message: e?.error?.message,
+                code: e?.error?.code,
+              });
+            }
+          }
+        })
+    })
+  }
 }

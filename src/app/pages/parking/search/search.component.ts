@@ -121,6 +121,9 @@ export class SearchComponent implements OnInit {
     const parkingIds = this.selection.selected.map((data) => {
       return data.Id
     })
+    if (parkingIds.length == 0) {
+      return
+    }
     let alertDialogModel: DialogData = {
       title:"Title",
       message:"msg"
@@ -129,6 +132,41 @@ export class SearchComponent implements OnInit {
       if (result.code == 200) {
         alertDialogModel.title = 'Success'
         alertDialogModel.message = 'Approve multi parking success'
+        this.refreshPage(true)
+      } else {
+        alertDialogModel.title = 'Failure'
+        alertDialogModel.message = `${result.message} - [${result.code}]`
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    }).catch(err => {
+      let alertDialogModel: DialogData = {
+        title:"Failure",
+        message:"Create parking fail, contact Tran Quoc Huy"
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    })
+  }
+
+  syncESMulti() {
+    console.log(this.selection.selected)
+    const parkingIds = this.selection.selected.map((data) => {
+      return data.Id
+    })
+    if (parkingIds.length == 0) {
+      return
+    }
+    let alertDialogModel: DialogData = {
+      title:"Title",
+      message:"msg"
+    }
+    this._parkingService.SyncMultiESAPI(parkingIds).then((result) => {
+      if (result.code == 200) {
+        alertDialogModel.title = 'Success'
+        alertDialogModel.message = 'sync multi parking success'
         this.refreshPage(true)
       } else {
         alertDialogModel.title = 'Failure'
