@@ -18,4 +18,21 @@ table {
   .icon-action-btn {
     display: inline;
   }
+
+  .search-parking-container {
+    width: 550px;
+    max-width: 100%;
+    overflow: auto;
+  }
+
+  .search-parking-table{
+    width: 800px;
+  }
+
+  td.mat-column-name{
+    max-width: 100px;
+  }
+}
+td.mat-column-name{
+  max-width: 100px;
 }

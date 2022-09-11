@@ -3,23 +3,23 @@
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item [disabled]="!ActionRoles.CanApprove">
-      <mat-icon>dialpad</mat-icon>
+      <mat-icon>check_box</mat-icon>
       <span>Approve</span>
     </button>
     <button mat-menu-item [disabled]="!ActionRoles.CanClose">
-      <mat-icon>voicemail</mat-icon>
+      <mat-icon>close</mat-icon>
       <span>Close</span>
     </button>
     <button mat-menu-item [disabled]="!ActionRoles.CanDenied">
-      <mat-icon>notifications_off</mat-icon>
+      <mat-icon>do_not_disturb_on</mat-icon>
       <span>Denied</span>
     </button>
     <button mat-menu-item [disabled]="!ActionRoles.CanBlock">
-      <mat-icon>notifications_off</mat-icon>
+      <mat-icon>block</mat-icon>
       <span>Block</span>
     </button>
     <button mat-menu-item [disabled]="!ActionRoles.CanRemove">
-      <mat-icon>notifications_off</mat-icon>
+      <mat-icon>delete_forever</mat-icon>
       <span>Remove</span>
     </button>
 </mat-menu>
