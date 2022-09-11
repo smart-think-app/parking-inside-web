@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  parking_url: "https://parkvn.duckdns.org"
+  parking_url: "172.18.0.30:1323"
 };
