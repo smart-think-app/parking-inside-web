@@ -1,5 +1,5 @@
 .add-form {
-    background-color: rgb(57, 66, 190);
+    background-color: #484444
   }
   
   .example-full-width {
@@ -8,4 +8,8 @@
   
   td {
     padding-right: 8px;
+  }
+
+  .blue-btn{
+    background-color: rgb(57, 66, 190);
   }

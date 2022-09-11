@@ -6,6 +6,9 @@ import { Router } from '@angular/router';
 import { ParkingModelPaging } from './../../../model/proxy_model/parking/parking_model';
 import { ParkingService } from 'src/app/services/parking.service';
 import { PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogData } from 'src/app/model/component_model/alert_dialog_data';
+import { ParkingAlertDialog } from 'src/app/core/components/alert_dialog/alert_dialog.component';
 
 
 
@@ -50,6 +53,10 @@ export class SearchComponent implements OnInit {
     this.selection.select(...this.dataSource.data);
   }
 
+  clearSelectAll() {
+    this.selection.clear()
+  }
+
   /** The label for the checkbox on the passed row */
   checkboxLabel(row?: ParkingModel): string {
     if (!row) {
@@ -59,7 +66,8 @@ export class SearchComponent implements OnInit {
   }
   constructor(
     private router: Router,
-    private _parkingService: ParkingService
+    private _parkingService: ParkingService,
+    public dialog: MatDialog,
     ) { }
 
   ngOnInit(): void {
@@ -87,6 +95,7 @@ export class SearchComponent implements OnInit {
   }
 
   public changePaging(event: PageEvent) {
+    this.clearSelectAll()
     this._parkingService.GetListParkingAPI({
       page_index: event.pageIndex,
       page_limit: event.pageSize
@@ -105,5 +114,37 @@ export class SearchComponent implements OnInit {
       default:
         return "white"
     }
+  }
+
+  approveMulti() {
+    console.log(this.selection.selected)
+    const parkingIds = this.selection.selected.map((data) => {
+      return data.Id
+    })
+    let alertDialogModel: DialogData = {
+      title:"Title",
+      message:"msg"
+    }
+    this._parkingService.ApproveMultiAPI(parkingIds).then((result) => {
+      if (result.code == 200) {
+        alertDialogModel.title = 'Success'
+        alertDialogModel.message = 'Approve multi parking success'
+        this.refreshPage(true)
+      } else {
+        alertDialogModel.title = 'Failure'
+        alertDialogModel.message = `${result.message} - [${result.code}]`
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    }).catch(err => {
+      let alertDialogModel: DialogData = {
+        title:"Failure",
+        message:"Create parking fail, contact Tran Quoc Huy"
+      }
+      this.dialog.open(ParkingAlertDialog,{
+        data: alertDialogModel
+      })
+    })
   }
 }
