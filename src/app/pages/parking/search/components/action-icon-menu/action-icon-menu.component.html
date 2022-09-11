@@ -2,11 +2,15 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item [disabled]="!ActionRoles.CanApprove">
+    <button mat-menu-item
+    [disabled]="!ActionRoles.CanApprove"
+    (click)="approve()">
       <mat-icon>check_box</mat-icon>
       <span>Approve</span>
     </button>
-    <button mat-menu-item [disabled]="!ActionRoles.CanClose">
+    <button mat-menu-item 
+    [disabled]="!ActionRoles.CanClose"
+    (click)="close()">
       <mat-icon>close</mat-icon>
       <span>Close</span>
     </button>

@@ -23,6 +23,7 @@ export class SearchComponent implements OnInit {
     Total:0,
     Parks:[]
   }
+  color = "red"
   displayedColumns: string[] = ['select', 'name','id' ,'phone', 'status','action'];
   dataSource = new MatTableDataSource<ParkingModel>([]);
   pageSizeOptions: number[] = [5, 10, 25, 100];
@@ -30,7 +31,7 @@ export class SearchComponent implements OnInit {
   pageEvent: PageEvent = {
     length: this.parkingPaging.Total,
     pageSize: this.pageSizeOptions[0],
-    pageIndex: 1
+    pageIndex: 0
   };
   add(){
     this.router.navigate(['parking/add'])
@@ -78,12 +79,31 @@ export class SearchComponent implements OnInit {
     })
   }
 
+  refreshPage(isRefresh: boolean) {
+    console.log(this.pageEvent)
+    if (isRefresh) {
+      this.changePaging(this.pageEvent)
+    }
+  }
+
   public changePaging(event: PageEvent) {
     this._parkingService.GetListParkingAPI({
-      page_index: event.pageIndex + 1,
+      page_index: event.pageIndex,
       page_limit: event.pageSize
     })
     return event;
   }
 
+  changeColorStatus(item: ParkingModel): string {
+    switch(item.Status){
+      case 1:
+        return "white"
+      case 2:
+        return "rgb(36, 255, 36)"
+      case 5:
+        return "red"
+      default:
+        return "white"
+    }
+  }
 }

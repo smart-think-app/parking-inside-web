@@ -54,14 +54,16 @@
 
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let element">{{ element.StatusDisplay }}</td>
+      <td [style.color]="changeColorStatus(element)" mat-cell *matCellDef="let element">{{ element.StatusDisplay }}</td>
     </ng-container>
 
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef>action</th>
       <td mat-cell *matCellDef="let element">
         <parking-action-icon-menu
+          [ParkingId]="element.Id"
           [ActionRoles]="element.ActionRoles"
+          (RefreshFlag)="refreshPage($event)"
         ></parking-action-icon-menu>
       </td>
     </ng-container>

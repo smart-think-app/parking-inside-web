@@ -11,7 +11,7 @@ import { ParkingService } from 'src/app/services/parking.service';
 import { environment } from 'src/environments/environment';
 import { ParkingWard } from './../../../model/proxy_model/parking/parking_model';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogData, ErrorAPICodeData } from 'src/app/model/component_model/alert_dialog_data';
+import { APICodeData, DialogData,  } from 'src/app/model/component_model/alert_dialog_data';
 import { ParkingAlertDialog } from 'src/app/core/components/alert_dialog/alert_dialog.component';
 
 @Component({
@@ -120,7 +120,7 @@ export class AddComponent implements OnInit {
       region_id: 1
     }
 
-    this._parkingService.AddParkingAPI(request).then((result: ErrorAPICodeData) =>{
+    this._parkingService.AddParkingAPI(request).then((result: APICodeData) =>{
       let alertDialogModel: DialogData = {
         title:"Title",
         message:"msg"

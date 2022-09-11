@@ -15,7 +15,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
 import { PARKING_ACCESS_TOKEN } from '../core/constants/constants';
-import { ErrorAPICodeData } from '../model/component_model/alert_dialog_data';
+import { APICodeData } from '../model/component_model/alert_dialog_data';
 @Injectable({
   providedIn: 'root',
 })
@@ -127,7 +127,7 @@ export class ParkingService {
       .get<ParkingResponseBase>(
         environment.parking_url +
           '/api/internal/v1/retrieve' +
-          `?page_limit=${request.page_limit}&page_index=${request.page_index}`,
+          `?page_limit=${request.page_limit}&page_index=${request.page_index+1}`,
         {
           headers: this._initHeader(),
         }
@@ -258,7 +258,7 @@ export class ParkingService {
   }
 
   AddParkingAPI(request: AddParkingRequest) {
-    return new Promise<ErrorAPICodeData>((resolve, reject) => {
+    return new Promise<APICodeData>((resolve, reject) => {
       this.httpClient
         .post<ParkingResponseBase>(
           environment.parking_url + `/api/internal/v1/add`,
@@ -296,5 +296,75 @@ export class ParkingService {
           },
         });
     });
+  }
+
+  ApproveAPI(parkingId: number) {
+    return new Promise<APICodeData>((resolve , reject) => {
+      this.httpClient
+        .put<ParkingResponseBase>(
+          environment.parking_url + `/api/internal/v1/${parkingId}/approve`,null,
+          {
+            headers: this._initHeader(),
+          }
+        ).subscribe({
+          next: (resp) => {
+            if (resp.code == 200) {
+              resolve({
+                code: 200,
+                message:"Success"
+              }) 
+            } else {
+              resolve({
+                code: resp.code,
+                message:resp.message
+              }) 
+            }
+          },
+          error: (e) => {
+            console.log(e);
+            if (e?.error?.code != 200) {
+              resolve({
+                message: e?.error?.message,
+                code: e?.error?.code,
+              });
+            }
+          }
+        })
+    })
+  }
+
+  CloseAPI(parkingId: number) {
+    return new Promise<APICodeData>((resolve , reject) => {
+      this.httpClient
+        .put<ParkingResponseBase>(
+          environment.parking_url + `/api/internal/v1/${parkingId}/close`,null,
+          {
+            headers: this._initHeader(),
+          }
+        ).subscribe({
+          next: (resp) => {
+            if (resp.code == 200) {
+              resolve({
+                code: 200,
+                message:"Success"
+              }) 
+            } else {
+              resolve({
+                code: resp.code,
+                message:resp.message
+              }) 
+            }
+          },
+          error: (e) => {
+            console.log(e);
+            if (e?.error?.code != 200) {
+              resolve({
+                message: e?.error?.message,
+                code: e?.error?.code,
+              });
+            }
+          }
+        })
+    })
   }
 }

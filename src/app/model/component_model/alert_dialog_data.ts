@@ -3,7 +3,7 @@ export interface DialogData {
     message: string;
   }
 
-export interface ErrorAPICodeData {
+export interface APICodeData {
   code: number,
   message: string
 }
