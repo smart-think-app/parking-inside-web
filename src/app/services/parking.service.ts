@@ -146,6 +146,7 @@ export class ParkingService {
                         ParkingName: item.parking_name,
                         ParkingPhone: item.parking_phone,
                         Status: item.status,
+                        ParkingTypes: item.parking_types,
                         ActionRoles: {
                           CanApprove: item.roles.can_approve,
                           CanRemove: item.roles.can_remove,

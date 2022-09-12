@@ -27,7 +27,7 @@ export class SearchComponent implements OnInit {
     Parks:[]
   }
   color = "red"
-  displayedColumns: string[] = ['select', 'name','id' ,'phone', 'status','action'];
+  displayedColumns: string[] = ['select', 'name','id','types' ,'phone', 'status','action'];
   dataSource = new MatTableDataSource<ParkingModel>([]);
   pageSizeOptions: number[] = [5, 10, 25, 100];
   selection = new SelectionModel<ParkingModel>(true, []);
@@ -149,6 +149,14 @@ export class SearchComponent implements OnInit {
         data: alertDialogModel
       })
     })
+  }
+
+  checkVerhiceCar(data: number[]) {
+    return  data.indexOf(1) >= 0
+  }
+
+  checkVerhiceMotorbike(data: number[]) {
+    return data.indexOf(2) >= 0
   }
 
   syncESMulti() {

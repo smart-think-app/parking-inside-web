@@ -22,6 +22,7 @@ export interface ParkingModel{
     ParkingPhone: string,
     Status: number,
     StatusDisplay: string,
+    ParkingTypes: number[],
     ActionRoles: ParkingActionRoles
 }
 
