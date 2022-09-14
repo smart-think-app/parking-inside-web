@@ -17,8 +17,9 @@ import { ActionIconMenuComponent } from './search/components/action-icon-menu/ac
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { ParkingSlotFormComponent } from './add/components/parking-slot-form/parking-slot-form.component';
 @NgModule({
-  declarations: [SearchComponent, AddComponent, ActionIconMenuComponent],
+  declarations: [SearchComponent, AddComponent, ActionIconMenuComponent, ParkingSlotFormComponent],
   imports: [
     ParkingRoutingModule,
     CommonModule,

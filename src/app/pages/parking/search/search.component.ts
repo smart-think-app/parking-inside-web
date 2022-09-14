@@ -27,7 +27,8 @@ export class SearchComponent implements OnInit {
     Parks:[]
   }
   color = "red"
-  displayedColumns: string[] = ['select', 'name','id','types' ,'phone', 'status','action'];
+  displayedColumns: string[] = ['select', 'name','id','types' ,
+  'phone', 'status','action','edit'];
   dataSource = new MatTableDataSource<ParkingModel>([]);
   pageSizeOptions: number[] = [5, 10, 25, 100];
   selection = new SelectionModel<ParkingModel>(true, []);
@@ -157,6 +158,11 @@ export class SearchComponent implements OnInit {
 
   checkVerhiceMotorbike(data: number[]) {
     return data.indexOf(2) >= 0
+  }
+
+  gotoEdit(parkingId: number) {
+    console.log("click edit")
+    this.router.navigate([`parking/edit/${parkingId}`])
   }
 
   syncESMulti() {

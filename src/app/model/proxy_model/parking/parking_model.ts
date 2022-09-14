@@ -67,7 +67,13 @@ export interface AddParkingRequest {
     lat: number,
     lng: number,
     parking_name: string,
-    parking_types:number[]
+    parking_types:AddParkingSlotRequest[]
+}
+
+export interface AddParkingSlotRequest {
+    parking_type: number,
+    total_slot?: number,
+    price: number
 }
 
 export interface ParkingActionRoles {

@@ -91,8 +91,46 @@
       </mat-form-field>
     </div>
   </div>
+  <div class="row">
+    <div class="col-lg-3 col-sm-6">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Hour Open</mat-label>
+        <input matInput formControlName="hourOpenForm" type="number" min="0" max="24"/>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Minute Open</mat-label>
+        <input matInput formControlName="minuteOpenForm" type="number" min="0" max="60"/>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Hour Close</mat-label>
+        <input matInput formControlName="hourCloseForm" type="number" min="0" max="24"/>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Minute Close</mat-label>
+        <input matInput formControlName="minuteCloseForm" type="number" min="0" max="60"/>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-*-12">
+      <h3 style="font-weight: bold;">Parking Slots</h3>
+    </div>
+  </div>
+  <app-parking-slot-form 
+  *ngFor="let item of this.addParkingForm.value.parkingTypesForm"
+  (dataHandle)="handleEventParkingSlot($event)"
+  [parkingType]="item"></app-parking-slot-form>
   <div class="example-button-row">
-    <button mat-raised-button class="blue-btn" [disabled]="addParkingForm.invalid" (click)="add()">Add</button>
+    <button *ngIf="mode == 1" mat-raised-button class="blue-btn" 
+    [disabled]="addParkingForm.invalid || parkingSlotFormValid.length != this.addParkingForm.value.parkingTypesForm?.length" (click)="add()">Add</button>
+    <button *ngIf="mode == 2" mat-raised-button class="blue-btn" 
+    [disabled]="addParkingForm.invalid || parkingSlotFormValid.length != this.addParkingForm.value.parkingTypesForm?.length" (click)="add()">Update</button>
     <button mat-raised-button class="blue-btn" (click)="back()">Back</button>
   </div>
 </form>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   AddParkingRequest,
   ParkingCity,
@@ -9,7 +9,7 @@ import {
 } from 'src/app/model/proxy_model/parking/parking_model';
 import { ParkingService } from 'src/app/services/parking.service';
 import { environment } from 'src/environments/environment';
-import { ParkingWard } from './../../../model/proxy_model/parking/parking_model';
+import { ParkingWard, AddParkingSlotRequest } from './../../../model/proxy_model/parking/parking_model';
 import { MatDialog } from '@angular/material/dialog';
 import { APICodeData, DialogData,  } from 'src/app/model/component_model/alert_dialog_data';
 import { ParkingAlertDialog } from 'src/app/core/components/alert_dialog/alert_dialog.component';
@@ -20,6 +20,8 @@ import { ParkingAlertDialog } from 'src/app/core/components/alert_dialog/alert_d
   styleUrls: ['./add.component.css'],
 })
 export class AddComponent implements OnInit {
+
+  mode = 1;
   cities: ParkingCity[] = [];
   districts: ParkingDistrict[] = [];
   wards: ParkingWard[] = [];
@@ -27,6 +29,8 @@ export class AddComponent implements OnInit {
     { value: 1, name: 'Car' },
     { value: 2, name: 'Motorbike' },
   ];
+
+  parkingSlotFormValid: AddParkingSlotRequest[] =[] ;
 
   parkingNameForm = new FormControl('',[Validators.required])
   parkingPhoneForm = new FormControl('',[])
@@ -39,6 +43,10 @@ export class AddComponent implements OnInit {
   parkingTypesForm = new FormControl<number[]>([],[Validators.required])
   latForm = new FormControl<number>(0,[Validators.required])
   lngForm = new FormControl<number>(0,[Validators.required])
+  hourOpenForm = new FormControl<number>(0,[Validators.min(0) , Validators.max(23)])
+  hourCloseForm = new FormControl<number>(0,[Validators.min(0) , Validators.max(23)])
+  minuteOpenForm = new FormControl<number>(0 , [Validators.min(0),Validators.max(59)])
+  minuteCloseForm = new FormControl<number>(0 , [Validators.min(0),Validators.max(59)])
 
   addParkingForm = this.formBuilder.group({
     parkingNameForm: this.parkingNameForm,
@@ -51,9 +59,14 @@ export class AddComponent implements OnInit {
     wardForm: this.wardForm,
     parkingTypesForm: this.parkingTypesForm,
     latForm: this.latForm,
-    lngForm: this.lngForm
+    lngForm: this.lngForm,
+    hourOpenForm: this.hourOpenForm,
+    hourCloseForm: this.hourCloseForm,
+    minuteOpenForm: this.minuteOpenForm,
+    minuteCloseForm: this.minuteCloseForm
   })
   constructor(
+    private _activeRouter: ActivatedRoute,
     private _parkingService: ParkingService,
     private formBuilder:FormBuilder,
     private _router: Router,
@@ -61,6 +74,20 @@ export class AddComponent implements OnInit {
     ) {}
   
   ngOnInit(): void {
+    // this.addParkingForm = this.formBuilder.group({...this.addParkingForm,minuteCloseForm: this.minuteCloseForm})
+    const parkingId: number = this._activeRouter.snapshot.params['id'];
+    if (parkingId > 0) {
+      this.mode = 2;
+    } else {
+      this.initModeAdd();
+    }
+  }
+
+  initModeUpdate() {
+
+  }
+
+  initModeAdd() {
     this._parkingService.getCity.subscribe((data) => {
       this.cities = data;
       this.addParkingForm.patchValue({
@@ -116,9 +143,10 @@ export class AddComponent implements OnInit {
       lat: this.addParkingForm.value.latForm as number,
       lng: this.addParkingForm.value.lngForm as number,
       parking_name: this.addParkingForm.value.parkingNameForm as string,
-      parking_types: this.addParkingForm.value.parkingTypesForm as number[],
-      region_id: 1
+      parking_types: this.parkingSlotFormValid,
+      region_id: 1,
     }
+    console.log(request)
 
     this._parkingService.AddParkingAPI(request).then((result: APICodeData) =>{
       let alertDialogModel: DialogData = {
@@ -148,5 +176,15 @@ export class AddComponent implements OnInit {
 
   back(){
     this._router.navigate(['/parking'])
+  }
+
+  handleEventParkingSlot(request: AddParkingSlotRequest){
+    for (let index = 0; index < this.parkingSlotFormValid.length; index++) {
+      if (this.parkingSlotFormValid[index].parking_type === request.parking_type) {
+        this.parkingSlotFormValid[index] = Object.assign({} , request)
+        return
+      }
+    }
+    this.parkingSlotFormValid.push(request)
   }
 }
