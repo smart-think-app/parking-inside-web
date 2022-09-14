@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   AddParkingRequest,
   ParkingCity,
+  ParkingDetailModel,
   ParkingDistrict,
   ParkingTypes,
 } from 'src/app/model/proxy_model/parking/parking_model';
@@ -13,6 +14,7 @@ import { ParkingWard, AddParkingSlotRequest } from './../../../model/proxy_model
 import { MatDialog } from '@angular/material/dialog';
 import { APICodeData, DialogData,  } from 'src/app/model/component_model/alert_dialog_data';
 import { ParkingAlertDialog } from 'src/app/core/components/alert_dialog/alert_dialog.component';
+import { PARKING_ACCESS_TOKEN } from 'src/app/core/constants/constants';
 
 @Component({
   selector: 'app-add',
@@ -31,6 +33,7 @@ export class AddComponent implements OnInit {
   ];
 
   parkingSlotFormValid: AddParkingSlotRequest[] =[] ;
+  parkingDetailModel?: ParkingDetailModel
 
   parkingNameForm = new FormControl('',[Validators.required])
   parkingPhoneForm = new FormControl('',[])
@@ -43,10 +46,10 @@ export class AddComponent implements OnInit {
   parkingTypesForm = new FormControl<number[]>([],[Validators.required])
   latForm = new FormControl<number>(0,[Validators.required])
   lngForm = new FormControl<number>(0,[Validators.required])
-  hourOpenForm = new FormControl<number>(0,[Validators.min(0) , Validators.max(23)])
-  hourCloseForm = new FormControl<number>(0,[Validators.min(0) , Validators.max(23)])
-  minuteOpenForm = new FormControl<number>(0 , [Validators.min(0),Validators.max(59)])
-  minuteCloseForm = new FormControl<number>(0 , [Validators.min(0),Validators.max(59)])
+  hourOpenForm = new FormControl<number>(0,[Validators.required,Validators.min(0) , Validators.max(23)])
+  hourCloseForm = new FormControl<number>(0,[Validators.required,Validators.min(0) , Validators.max(23)])
+  minuteOpenForm = new FormControl<number>(0 , [Validators.required,Validators.min(0),Validators.max(59)])
+  minuteCloseForm = new FormControl<number>(0 , [Validators.required,Validators.min(0),Validators.max(59)])
 
   addParkingForm = this.formBuilder.group({
     parkingNameForm: this.parkingNameForm,
@@ -72,20 +75,56 @@ export class AddComponent implements OnInit {
     private _router: Router,
     public dialog: MatDialog,
     ) {}
-  
+  parkingId: number = this._activeRouter.snapshot.params['id'];
   ngOnInit(): void {
     // this.addParkingForm = this.formBuilder.group({...this.addParkingForm,minuteCloseForm: this.minuteCloseForm})
-    const parkingId: number = this._activeRouter.snapshot.params['id'];
-    if (parkingId > 0) {
+    this.initModeAdd();
+    if (this.parkingId > 0) {
       this.mode = 2;
-    } else {
-      this.initModeAdd();
+      this._parkingService.GetDetailParkingAPI(this.parkingId).then(data => {
+        console.log(data)
+        this.addParkingForm.patchValue({
+          parkingNameForm : data.ParkingName,
+          parkingPhoneForm: data.ParkingPhone,
+          ownerNameForm: data.OwnerName,
+          ownerPhoneForm: data.OwnerPhone,
+          addressForm: data.Address,
+          parkingTypesForm: data.ParkingTypes.map(element => {
+            return element.Type
+          }),
+          latForm: data.Lat,
+          lngForm: data.Lng,
+          hourCloseForm: data.CloseAtHour,
+          hourOpenForm: data.OpenAtHour,
+          minuteCloseForm: data.CloseAtMinute,
+          minuteOpenForm: data.OpenAtMinute
+        })
+        this._parkingService.GetListCityAPICallback().then(dataCity => {
+          this.cities = dataCity;
+          this.addParkingForm.patchValue({
+            cityForm : data.CityId
+          })
+          this._parkingService.GetListDistrictByCityAPICallback(data.CityId).then(dataDistrict =>{
+            console.log(dataDistrict)
+            this.districts = dataDistrict
+            this.addParkingForm.patchValue({
+              districtForm : data.DistrictId
+            })
+            this._parkingService.getListWardsAPICallback(data.CityId ,data.DistrictId).then(dataWard => {
+              this.wards = dataWard
+              this.addParkingForm.patchValue({
+                wardForm : data.WardId
+              })
+            })
+          })
+        })
+      })
+    }else {
+      this.initCitiesFilter();
     }
   }
 
-  initModeUpdate() {
-
-  }
+  
 
   initModeAdd() {
     this._parkingService.getCity.subscribe((data) => {
@@ -108,7 +147,6 @@ export class AddComponent implements OnInit {
         wardForm: this.wards[0]?.ward_id
       })
     });
-    this.initCitiesFilter();
   }
 
   initCitiesFilter() {
@@ -145,6 +183,10 @@ export class AddComponent implements OnInit {
       parking_name: this.addParkingForm.value.parkingNameForm as string,
       parking_types: this.parkingSlotFormValid,
       region_id: 1,
+      open_at_hour: this.addParkingForm.value.hourOpenForm as number,
+      open_at_minute:this.addParkingForm.value.minuteOpenForm as number,
+      close_at_hour:this.addParkingForm.value.hourCloseForm as number,
+      close_at_minute: this.addParkingForm.value.minuteCloseForm as number
     }
     console.log(request)
 
@@ -159,6 +201,10 @@ export class AddComponent implements OnInit {
       } else {
         alertDialogModel.title = 'Failure'
         alertDialogModel.message = `${result.message} - [${result.code}]`
+        if (result.code == 401) {
+          sessionStorage.removeItem(PARKING_ACCESS_TOKEN);
+          this._router.navigate(['/']);
+        }
       }
       this.dialog.open(ParkingAlertDialog,{
         data: alertDialogModel

@@ -68,6 +68,10 @@ export interface AddParkingRequest {
     lng: number,
     parking_name: string,
     parking_types:AddParkingSlotRequest[]
+    open_at_hour: number,
+    open_at_minute: number,
+    close_at_hour: number,
+    close_at_minute: number
 }
 
 export interface AddParkingSlotRequest {
@@ -88,4 +92,30 @@ export interface ParkingActionRoles {
 export interface ListParkingRequest {
     page_index: number,
     page_limit: number
+}
+
+export interface ParkingDetailModel {
+    Id: number,
+    ParkingName: string ,
+    ParkingPhone: string,
+    Status: number,
+    Address: string,
+    Lat: number,
+    Lng: number,
+    ParkingTypes: ParkingDetailSlotModel[],
+    OpenAtHour: number,
+    OpenAtMinute: number,
+    CloseAtHour: number,
+    CloseAtMinute: number,
+    CityId: number,
+    DistrictId: number,
+    WardId: number,
+    OwnerName: string,
+    OwnerPhone: string
+}
+
+export interface ParkingDetailSlotModel {
+    Type: number,
+    TotalSlot?: number,
+    Price: number
 }

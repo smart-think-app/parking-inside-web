@@ -11,6 +11,8 @@ import {
   ListParkingRequest,
   ParkingModel,
   ParkingModelPaging,
+  ParkingDetailModel,
+  ParkingDetailSlotModel,
 } from './../model/proxy_model/parking/parking_model';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
@@ -41,7 +43,29 @@ export class ParkingService {
     phone: '',
     username: '',
   });
-
+  private _detailParkingInfo: BehaviorSubject<ParkingDetailModel> =
+    new BehaviorSubject({
+      Id: 0,
+      ParkingName: '',
+      ParkingPhone: '',
+      Status: 0,
+      Address: '',
+      Lat: 0,
+      Lng: 0,
+      ParkingTypes: [<ParkingDetailSlotModel>{}],
+      OpenAtHour: 0,
+      OpenAtMinute: 0,
+      CloseAtHour: 0,
+      CloseAtMinute: 0,
+      CityId: 0,
+      DistrictId: 0,
+      WardId: 0,
+      OwnerName: '',
+      OwnerPhone: '',
+    });
+  get getDetailParkingInfo() {
+    return this._detailParkingInfo.asObservable();
+  }
   get getParkingPaging() {
     return this._parkingPaging.asObservable();
   }
@@ -122,12 +146,131 @@ export class ParkingService {
       });
   }
 
+  GetListCityAPICallback() {
+    return new Promise<ParkingCity[]>((resolve, reject) => {
+      this.httpClient
+        .get<ParkingResponseBase>(
+          environment.parking_url + '/api/public/v1/location/cities'
+        )
+        .subscribe({
+          next: (resp) => {
+            if (resp.code == 200) {
+              resp.data != null
+                ? resp.data.map((item: any) => {
+                    const city: ParkingCity = {
+                      city_id: item.city_id,
+                      city_name: item.city_name,
+                    };
+                    return city;
+                  })
+                : [];
+                resolve(resp.data);
+            }
+          },
+          error: (e) => {
+            console.log(e);
+            reject(e);
+          },
+          complete: () => {
+            console.log('Complete API Get City');
+          },
+        });
+    });
+  }
+
+  GetListDistrictByCityAPICallback(cityId: number ) {
+    return new Promise<ParkingDistrict[]>((resolve, reject) => {
+      this.httpClient
+        .get<ParkingResponseBase>(
+          environment.parking_url + `/api/public/v1/location/cities/${cityId}/districts`
+        )
+        .subscribe({
+          next: (resp) => {
+            if (resp.code == 200) {
+              resolve(
+                resp.data != null
+                  ? resp.data.map((item: any) => {
+                      const district: ParkingDistrict = {
+                        city: {
+                          city_name: item.city_name,
+                          city_id: item.city_id,
+                        },
+                        district_id: item.district_id,
+                        district_name: item.district_name,
+                      };
+                      return district;
+                    })
+                  : []
+              );
+            }
+          },
+          error: (e) => {
+            console.log(e);
+            reject(e);
+          },
+          complete: () => {
+            console.log('Complete API Get District Callback');
+          },
+        });
+    });
+  }
+
+  GetDetailParkingAPI(parkingId: number) {
+    return new Promise<ParkingDetailModel>((resolve, reject) => {
+      this.httpClient
+        .get<ParkingResponseBase>(
+          environment.parking_url + `/api/internal/v1/${parkingId}/detail`,
+          {
+            headers: this._initHeader(),
+          }
+        )
+        .subscribe({
+          next: (resp) => {
+            if (resp.code == 200) {
+              const dataResp: ParkingDetailModel = {
+                Id: resp.data.id,
+                ParkingName: resp.data.parking_name,
+                ParkingPhone: resp.data.parking_phone,
+                Status: resp.data.status,
+                Address: resp.data.address,
+                Lat: resp.data.location.lat,
+                Lng: resp.data.location.lng,
+                ParkingTypes: resp.data.parking_types.map((item: any) => {
+                  const dataItem: ParkingDetailSlotModel = {
+                    Type: item.type,
+                    TotalSlot: item.total_slot,
+                    Price: item.price,
+                  };
+                  return dataItem;
+                }),
+                OpenAtHour: resp.data.open_at_hour,
+                OpenAtMinute: resp.data.open_at_minute,
+                CloseAtHour: resp.data.close_at_hour,
+                CloseAtMinute: resp.data.close_at_minute,
+                CityId: resp.data.city_id,
+                DistrictId: resp.data.district_id,
+                WardId: resp.data.ward_id,
+                OwnerName: resp.data.owner_name,
+                OwnerPhone: resp.data.owner_phone,
+              };
+              resolve(dataResp);
+            }
+          },
+          error: (e) => {
+            reject(e);
+          },
+        });
+    });
+  }
+
   GetListParkingAPI(request: ListParkingRequest) {
     return this.httpClient
       .get<ParkingResponseBase>(
         environment.parking_url +
           '/api/internal/v1/retrieve' +
-          `?page_limit=${request.page_limit}&page_index=${request.page_index+1}`,
+          `?page_limit=${request.page_limit}&page_index=${
+            request.page_index + 1
+          }`,
         {
           headers: this._initHeader(),
         }
@@ -153,7 +296,7 @@ export class ParkingService {
                           CanDenied: item.roles.can_denied,
                           CanBlock: item.roles.can_block,
                           CanClose: item.roles.can_close,
-                          CanReopen: item.roles.can_reopen
+                          CanReopen: item.roles.can_reopen,
                         },
                       };
                       return parkingItem;
@@ -250,6 +393,47 @@ export class ParkingService {
       });
   }
 
+  getListWardsAPICallback(cityId: number, districtId: number) {
+    return new Promise<ParkingWard[]>((resolve , reject) => {
+      this.httpClient
+      .get<ParkingResponseBase>(
+        environment.parking_url +
+          `/api/public/v1/location/cities/${cityId}/districts/${districtId}/wards`
+      )
+      .subscribe({
+        next: (resp) => {
+          if (resp.code == 200) {
+            resolve(
+              resp.data != null
+                ? resp.data.map((item: any) => {
+                    const ward: ParkingWard = {
+                      district: {
+                        city: {
+                          city_id: item.city_id,
+                          city_name: item.city_name,
+                        },
+                        district_name: item.district_name,
+                        district_id: item.district_id,
+                      },
+                      ward_id: item.ward_id,
+                      ward_name: item.ward_name,
+                    };
+                    return ward;
+                  })
+                : []
+            );
+          }
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {
+          console.log('Complete API Get Wards');
+        },
+      });
+    })
+  }
+
   private _initHeader() {
     const token = sessionStorage.getItem(PARKING_ACCESS_TOKEN);
     const httpHeader = new HttpHeaders()
@@ -301,25 +485,27 @@ export class ParkingService {
   }
 
   ApproveAPI(parkingId: number) {
-    return new Promise<APICodeData>((resolve , reject) => {
+    return new Promise<APICodeData>((resolve, reject) => {
       this.httpClient
         .put<ParkingResponseBase>(
-          environment.parking_url + `/api/internal/v1/${parkingId}/approve`,null,
+          environment.parking_url + `/api/internal/v1/${parkingId}/approve`,
+          null,
           {
             headers: this._initHeader(),
           }
-        ).subscribe({
+        )
+        .subscribe({
           next: (resp) => {
             if (resp.code == 200) {
               resolve({
                 code: 200,
-                message:"Success"
-              }) 
+                message: 'Success',
+              });
             } else {
               resolve({
                 code: resp.code,
-                message:resp.message
-              }) 
+                message: resp.message,
+              });
             }
           },
           error: (e) => {
@@ -330,31 +516,33 @@ export class ParkingService {
                 code: e?.error?.code,
               });
             }
-          }
-        })
-    })
+          },
+        });
+    });
   }
 
   CloseAPI(parkingId: number) {
-    return new Promise<APICodeData>((resolve , reject) => {
+    return new Promise<APICodeData>((resolve, reject) => {
       this.httpClient
         .put<ParkingResponseBase>(
-          environment.parking_url + `/api/internal/v1/${parkingId}/close`,null,
+          environment.parking_url + `/api/internal/v1/${parkingId}/close`,
+          null,
           {
             headers: this._initHeader(),
           }
-        ).subscribe({
+        )
+        .subscribe({
           next: (resp) => {
             if (resp.code == 200) {
               resolve({
                 code: 200,
-                message:"Success"
-              }) 
+                message: 'Success',
+              });
             } else {
               resolve({
                 code: resp.code,
-                message:resp.message
-              }) 
+                message: resp.message,
+              });
             }
           },
           error: (e) => {
@@ -365,31 +553,33 @@ export class ParkingService {
                 code: e?.error?.code,
               });
             }
-          }
-        })
-    })
+          },
+        });
+    });
   }
 
   ReopenAPI(parkingId: number) {
-    return new Promise<APICodeData>((resolve , reject) => {
+    return new Promise<APICodeData>((resolve, reject) => {
       this.httpClient
         .put<ParkingResponseBase>(
-          environment.parking_url + `/api/internal/v1/${parkingId}/reopen`,null,
+          environment.parking_url + `/api/internal/v1/${parkingId}/reopen`,
+          null,
           {
             headers: this._initHeader(),
           }
-        ).subscribe({
+        )
+        .subscribe({
           next: (resp) => {
             if (resp.code == 200) {
               resolve({
                 code: 200,
-                message:"Success"
-              }) 
+                message: 'Success',
+              });
             } else {
               resolve({
                 code: resp.code,
-                message:resp.message
-              }) 
+                message: resp.message,
+              });
             }
           },
           error: (e) => {
@@ -400,31 +590,34 @@ export class ParkingService {
                 code: e?.error?.code,
               });
             }
-          }
-        })
-    })
+          },
+        });
+    });
   }
 
   ApproveMultiAPI(parkingIds: number[]) {
-    return new Promise<APICodeData>((resolve , reject) => {
+    return new Promise<APICodeData>((resolve, reject) => {
       this.httpClient
         .put<ParkingResponseBase>(
-          environment.parking_url + `/api/internal/v1/approve-multi/${parkingIds.join(",")}`,null,
+          environment.parking_url +
+            `/api/internal/v1/approve-multi/${parkingIds.join(',')}`,
+          null,
           {
             headers: this._initHeader(),
           }
-        ).subscribe({
+        )
+        .subscribe({
           next: (resp) => {
             if (resp.code == 200) {
               resolve({
                 code: 200,
-                message:"Success"
-              }) 
+                message: 'Success',
+              });
             } else {
               resolve({
                 code: resp.code,
-                message:resp.message
-              }) 
+                message: resp.message,
+              });
             }
           },
           error: (e) => {
@@ -435,31 +628,34 @@ export class ParkingService {
                 code: e?.error?.code,
               });
             }
-          }
-        })
-    })
+          },
+        });
+    });
   }
 
   SyncMultiESAPI(parkingIds: number[]) {
-    return new Promise<APICodeData>((resolve , reject) => {
+    return new Promise<APICodeData>((resolve, reject) => {
       this.httpClient
         .put<ParkingResponseBase>(
-          environment.parking_url + `/api/internal/v1/sync-multi-es/${parkingIds.join(",")}`,null,
+          environment.parking_url +
+            `/api/internal/v1/sync-multi-es/${parkingIds.join(',')}`,
+          null,
           {
             headers: this._initHeader(),
           }
-        ).subscribe({
+        )
+        .subscribe({
           next: (resp) => {
             if (resp.code == 200) {
               resolve({
                 code: 200,
-                message:"Success"
-              }) 
+                message: 'Success',
+              });
             } else {
               resolve({
                 code: resp.code,
-                message:resp.message
-              }) 
+                message: resp.message,
+              });
             }
           },
           error: (e) => {
@@ -470,31 +666,33 @@ export class ParkingService {
                 code: e?.error?.code,
               });
             }
-          }
-        })
-    })
+          },
+        });
+    });
   }
 
   SyncOneESAPI(parkingId: number) {
-    return new Promise<APICodeData>((resolve , reject) => {
+    return new Promise<APICodeData>((resolve, reject) => {
       this.httpClient
         .put<ParkingResponseBase>(
-          environment.parking_url + `/api/internal/v1/${parkingId}/sync-es`,null,
+          environment.parking_url + `/api/internal/v1/${parkingId}/sync-es`,
+          null,
           {
             headers: this._initHeader(),
           }
-        ).subscribe({
+        )
+        .subscribe({
           next: (resp) => {
             if (resp.code == 200) {
               resolve({
                 code: 200,
-                message:"Success"
-              }) 
+                message: 'Success',
+              });
             } else {
               resolve({
                 code: resp.code,
-                message:resp.message
-              }) 
+                message: resp.message,
+              });
             }
           },
           error: (e) => {
@@ -505,8 +703,8 @@ export class ParkingService {
                 code: e?.error?.code,
               });
             }
-          }
-        })
-    })
+          },
+        });
+    });
   }
 }
