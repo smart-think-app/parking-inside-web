@@ -119,3 +119,20 @@ export interface ParkingDetailSlotModel {
     TotalSlot?: number,
     Price: number
 }
+
+export interface UpdateParkingRequest {
+    parking_name: string,
+    parking_phone: string,
+    owner_name: string,
+    owner_phone: string ,
+    city_id: number,
+    district_id: number,
+    ward_id: number,
+    address: string,
+    lat: number,
+    lng: number,
+    hour_open: number,
+    minute_open: number,
+    hour_close: number,
+    minute_close: number
+}

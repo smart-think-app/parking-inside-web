@@ -1,7 +1,7 @@
 <form class="add-form" [formGroup]="addParkingForm">
   <div class="row">
     <div class="col-lg-6 col-sm-12">
-      <mat-form-field class="example-full-width" appearance="fill" >
+      <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Parking Name</mat-label>
         <input matInput formControlName="parkingNameForm" />
       </mat-form-field>
@@ -10,7 +10,12 @@
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Parking Phone</mat-label>
         <span matPrefix>+84 &nbsp;</span>
-        <input type="tel" matInput placeholder="0946515847" formControlName="parkingPhoneForm"/>
+        <input
+          type="tel"
+          matInput
+          placeholder="0946515847"
+          formControlName="parkingPhoneForm"
+        />
       </mat-form-field>
     </div>
   </div>
@@ -25,7 +30,12 @@
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Owner Phone</mat-label>
         <span matPrefix>+84 &nbsp;</span>
-        <input type="tel" matInput placeholder="0946515847" formControlName="ownerPhoneForm" />
+        <input
+          type="tel"
+          matInput
+          placeholder="0946515847"
+          formControlName="ownerPhoneForm"
+        />
       </mat-form-field>
     </div>
   </div>
@@ -33,7 +43,11 @@
     <div class="col-lg-12 col-sm-12">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Address</mat-label>
-        <textarea matInput placeholder="Ex. 184/4 Dang Van Ngu Street" formControlName="addressForm"></textarea>
+        <textarea
+          matInput
+          placeholder="Ex. 184/4 Dang Van Ngu Street"
+          formControlName="addressForm"
+        ></textarea>
       </mat-form-field>
     </div>
   </div>
@@ -41,7 +55,11 @@
     <div class="col-lg-6 col-sm-12">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>City</mat-label>
-        <mat-select formControlName="cityForm" name="city" (selectionChange)="initFilterDistrictByCity()">
+        <mat-select
+          formControlName="cityForm"
+          name="city"
+          (selectionChange)="initFilterDistrictByCity()"
+        >
           <mat-option *ngFor="let city of cities" [value]="city.city_id">
             {{ city.city_name }}
           </mat-option>
@@ -51,8 +69,15 @@
     <div class="col-lg-6 col-sm-12">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Districts</mat-label>
-        <mat-select formControlName="districtForm" name="district" (selectionChange)="initFilterWardByDistrict()">
-          <mat-option *ngFor="let district of districts" [value]="district.district_id">
+        <mat-select
+          formControlName="districtForm"
+          name="district"
+          (selectionChange)="initFilterWardByDistrict()"
+        >
+          <mat-option
+            *ngFor="let district of districts"
+            [value]="district.district_id"
+          >
             {{ district.district_name }}
           </mat-option>
         </mat-select>
@@ -72,7 +97,11 @@
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Parking Types</mat-label>
         <mat-select [formControl]="parkingTypesForm" multiple>
-          <mat-option *ngFor="let parkingType of parkingTypes" [value]="parkingType.value">{{parkingType.name}}</mat-option>
+          <mat-option
+            *ngFor="let parkingType of parkingTypes"
+            [value]="parkingType.value"
+            >{{ parkingType.name }}</mat-option
+          >
         </mat-select>
       </mat-form-field>
     </div>
@@ -81,13 +110,13 @@
     <div class="col-lg-6 col-sm-12">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Lat</mat-label>
-        <input matInput formControlName="latForm" type="number"/>
+        <input matInput formControlName="latForm" type="number" />
       </mat-form-field>
     </div>
     <div class="col-lg-6 col-sm-12">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Lng</mat-label>
-        <input matInput formControlName="lngForm" type="number"/>
+        <input matInput formControlName="lngForm" type="number" />
       </mat-form-field>
     </div>
   </div>
@@ -95,42 +124,87 @@
     <div class="col-lg-3 col-sm-6">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Hour Open</mat-label>
-        <input matInput formControlName="hourOpenForm" type="number" min="0" max="24"/>
+        <input
+          matInput
+          formControlName="hourOpenForm"
+          type="number"
+          min="0"
+          max="24"
+        />
       </mat-form-field>
     </div>
     <div class="col-lg-3 col-sm-6">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Minute Open</mat-label>
-        <input matInput formControlName="minuteOpenForm" type="number" min="0" max="60"/>
+        <input
+          matInput
+          formControlName="minuteOpenForm"
+          type="number"
+          min="0"
+          max="60"
+        />
       </mat-form-field>
     </div>
     <div class="col-lg-3 col-sm-6">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Hour Close</mat-label>
-        <input matInput formControlName="hourCloseForm" type="number" min="0" max="24"/>
+        <input
+          matInput
+          formControlName="hourCloseForm"
+          type="number"
+          min="0"
+          max="24"
+        />
       </mat-form-field>
     </div>
     <div class="col-lg-3 col-sm-6">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Minute Close</mat-label>
-        <input matInput formControlName="minuteCloseForm" type="number" min="0" max="60"/>
+        <input
+          matInput
+          formControlName="minuteCloseForm"
+          type="number"
+          min="0"
+          max="60"
+        />
       </mat-form-field>
     </div>
   </div>
-  <div class="row">
-    <div class="col-*-12">
-      <h3 style="font-weight: bold;">Parking Slots</h3>
+  <div *ngIf="mode === 1">
+    <div class="row">
+      <div class="col-*-12">
+        <h3 style="font-weight: bold">Parking Slots</h3>
+      </div>
     </div>
+    <app-parking-slot-form
+      *ngFor="let item of this.addParkingForm.value.parkingTypesForm"
+      (dataHandle)="handleEventParkingSlot($event)"
+      [parkingType]="item"
+    ></app-parking-slot-form>
   </div>
-  <app-parking-slot-form 
-  *ngFor="let item of this.addParkingForm.value.parkingTypesForm"
-  (dataHandle)="handleEventParkingSlot($event)"
-  [parkingType]="item"></app-parking-slot-form>
   <div class="example-button-row">
-    <button *ngIf="mode == 1" mat-raised-button class="blue-btn" 
-    [disabled]="addParkingForm.invalid || parkingSlotFormValid.length != this.addParkingForm.value.parkingTypesForm?.length" (click)="add()">Add</button>
-    <button *ngIf="mode == 2" mat-raised-button class="blue-btn" 
-    [disabled]="addParkingForm.invalid || parkingSlotFormValid.length != this.addParkingForm.value.parkingTypesForm?.length" (click)="add()">Update</button>
+    <button
+      *ngIf="mode == 1"
+      mat-raised-button
+      class="blue-btn"
+      [disabled]="
+        addParkingForm.invalid ||
+        parkingSlotFormValid.length !=
+          this.addParkingForm.value.parkingTypesForm?.length
+      "
+      (click)="add()"
+    >
+      Add
+    </button>
+    <button
+      *ngIf="mode == 2"
+      mat-raised-button
+      class="blue-btn"
+      [disabled]="addParkingForm.invalid"
+      (click)="update()"
+    >
+      Update
+    </button>
     <button mat-raised-button class="blue-btn" (click)="back()">Back</button>
   </div>
 </form>

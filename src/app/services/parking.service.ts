@@ -13,6 +13,7 @@ import {
   ParkingModelPaging,
   ParkingDetailModel,
   ParkingDetailSlotModel,
+  UpdateParkingRequest,
 } from './../model/proxy_model/parking/parking_model';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
@@ -254,6 +255,28 @@ export class ParkingService {
                 OwnerPhone: resp.data.owner_phone,
               };
               resolve(dataResp);
+            }
+          },
+          error: (e) => {
+            reject(e);
+          },
+        });
+    });
+  }
+
+  UpdateParkingAPI(parkingId: number,request: UpdateParkingRequest) {
+    return new Promise<boolean>((resolve, reject) => {
+      this.httpClient
+        .put<ParkingResponseBase>(
+          environment.parking_url + `/api/internal/v1/${parkingId}/update`,request,
+          {
+            headers: this._initHeader(),
+          }
+        )
+        .subscribe({
+          next: (resp) => {
+            if (resp.code == 200) {
+              resolve(true);
             }
           },
           error: (e) => {
