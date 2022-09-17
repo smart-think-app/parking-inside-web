@@ -5,6 +5,7 @@ import {
   AddParkingRequest,
   ParkingCity,
   ParkingDetailModel,
+  ParkingDetailSlotModel,
   ParkingDistrict,
   ParkingTypes,
   UpdateParkingRequest,
@@ -39,7 +40,7 @@ export class AddComponent implements OnInit {
   ];
 
   parkingSlotFormValid: AddParkingSlotRequest[] = [];
-  parkingDetailModel?: ParkingDetailModel;
+  parkingDetailSlotModel: ParkingDetailSlotModel[] = [];
 
   parkingNameForm = new FormControl('', [Validators.required]);
   parkingPhoneForm = new FormControl('', []);
@@ -82,7 +83,6 @@ export class AddComponent implements OnInit {
     cityForm: this.cityForm,
     districtForm: this.districtForm,
     wardForm: this.wardForm,
-    parkingTypesForm: this.parkingTypesForm,
     latForm: this.latForm,
     lngForm: this.lngForm,
     hourOpenForm: this.hourOpenForm,
@@ -98,6 +98,23 @@ export class AddComponent implements OnInit {
     public dialog: MatDialog
   ) {}
   parkingId: number = this._activeRouter.snapshot.params['id'];
+
+  initFormValue(data: ParkingDetailModel) {
+    this.addParkingForm.patchValue({
+      parkingNameForm: data.ParkingName,
+      parkingPhoneForm: data.ParkingPhone,
+      ownerNameForm: data.OwnerName,
+      ownerPhoneForm: data.OwnerPhone,
+      addressForm: data.Address,
+      latForm: data.Lat,
+      lngForm: data.Lng,
+      hourCloseForm: data.CloseAtHour,
+      hourOpenForm: data.OpenAtHour,
+      minuteCloseForm: data.CloseAtMinute,
+      minuteOpenForm: data.OpenAtMinute,
+    });
+    this.parkingDetailSlotModel = data.ParkingTypes;
+  }
   ngOnInit(): void {
     // this.addParkingForm = this.formBuilder.group({...this.addParkingForm,minuteCloseForm: this.minuteCloseForm})
     this.initModeAdd();
@@ -105,22 +122,7 @@ export class AddComponent implements OnInit {
       this.mode = 2;
       this._parkingService.GetDetailParkingAPI(this.parkingId).then((data) => {
         console.log(data);
-        this.addParkingForm.patchValue({
-          parkingNameForm: data.ParkingName,
-          parkingPhoneForm: data.ParkingPhone,
-          ownerNameForm: data.OwnerName,
-          ownerPhoneForm: data.OwnerPhone,
-          addressForm: data.Address,
-          parkingTypesForm: data.ParkingTypes.map((element) => {
-            return element.Type;
-          }),
-          latForm: data.Lat,
-          lngForm: data.Lng,
-          hourCloseForm: data.CloseAtHour,
-          hourOpenForm: data.OpenAtHour,
-          minuteCloseForm: data.CloseAtMinute,
-          minuteOpenForm: data.OpenAtMinute,
-        });
+        this.initFormValue(data)
         this._parkingService.GetListCityAPICallback().then((dataCity) => {
           this.cities = dataCity;
           this.addParkingForm.patchValue({
@@ -171,6 +173,9 @@ export class AddComponent implements OnInit {
         wardForm: this.wards[0]?.ward_id,
       });
     });
+    this._parkingService.getDetailParkingInfo.subscribe((data) => {
+      this.initFormValue(data)
+    })
   }
 
   initCitiesFilter() {

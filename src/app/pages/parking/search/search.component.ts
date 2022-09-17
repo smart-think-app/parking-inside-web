@@ -27,7 +27,7 @@ export class SearchComponent implements OnInit {
     Parks:[]
   }
   color = "red"
-  displayedColumns: string[] = ['select', 'name','id','types' ,
+  displayedColumns: string[] = ['select', 'name','id',
   'phone', 'status','action','edit'];
   dataSource = new MatTableDataSource<ParkingModel>([]);
   pageSizeOptions: number[] = [5, 10, 25, 100];
@@ -75,7 +75,6 @@ export class SearchComponent implements OnInit {
     this._parkingService.getParkingPaging.subscribe((data) => {
       this.parkingPaging = data;
       this.dataSource.data = this.parkingPaging.Parks
-      console.log(this.dataSource.data)
     })
     this.initPaging()
   }

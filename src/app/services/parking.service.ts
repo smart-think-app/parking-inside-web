@@ -238,9 +238,11 @@ export class ParkingService {
                 Lng: resp.data.location.lng,
                 ParkingTypes: resp.data.parking_types.map((item: any) => {
                   const dataItem: ParkingDetailSlotModel = {
+                    Id: item.id,
                     Type: item.type,
                     TotalSlot: item.total_slot,
                     Price: item.price,
+                    TypeDisplay: item.type_display
                   };
                   return dataItem;
                 }),
@@ -261,6 +263,53 @@ export class ParkingService {
             reject(e);
           },
         });
+    });
+  }
+
+  GetDetailParkingAPIWithObserver(parkingId: number) {
+    return this.httpClient
+    .get<ParkingResponseBase>(
+      environment.parking_url + `/api/internal/v1/${parkingId}/detail`,
+      {
+        headers: this._initHeader(),
+      }
+    )
+    .subscribe({
+      next: (resp) => {
+        if (resp.code == 200) {
+          const dataResp: ParkingDetailModel = {
+            Id: resp.data.id,
+            ParkingName: resp.data.parking_name,
+            ParkingPhone: resp.data.parking_phone,
+            Status: resp.data.status,
+            Address: resp.data.address,
+            Lat: resp.data.location.lat,
+            Lng: resp.data.location.lng,
+            ParkingTypes: resp.data.parking_types.map((item: any) => {
+              const dataItem: ParkingDetailSlotModel = {
+                Id: item.id,
+                Type: item.type,
+                TotalSlot: item.total_slot,
+                Price: item.price,
+                TypeDisplay: item.type_display
+              };
+              return dataItem;
+            }),
+            OpenAtHour: resp.data.open_at_hour,
+            OpenAtMinute: resp.data.open_at_minute,
+            CloseAtHour: resp.data.close_at_hour,
+            CloseAtMinute: resp.data.close_at_minute,
+            CityId: resp.data.city_id,
+            DistrictId: resp.data.district_id,
+            WardId: resp.data.ward_id,
+            OwnerName: resp.data.owner_name,
+            OwnerPhone: resp.data.owner_phone,
+          };
+          this._detailParkingInfo.next(dataResp)
+        }
+      },
+      error: (e) => {
+      },
     });
   }
 
@@ -312,7 +361,6 @@ export class ParkingService {
                         ParkingName: item.parking_name,
                         ParkingPhone: item.parking_phone,
                         Status: item.status,
-                        ParkingTypes: item.parking_types,
                         ActionRoles: {
                           CanApprove: item.roles.can_approve,
                           CanRemove: item.roles.can_remove,

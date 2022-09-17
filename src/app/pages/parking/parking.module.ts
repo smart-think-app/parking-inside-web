@@ -16,10 +16,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ActionIconMenuComponent } from './search/components/action-icon-menu/action-icon-menu.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
+import {MatRadioModule} from '@angular/material/radio';
 import {MatPaginatorModule} from '@angular/material/paginator';
-import { ParkingSlotFormComponent } from './add/components/parking-slot-form/parking-slot-form.component';
+import { TableParkingSlotComponent } from './add/components/table-parking-slot/table-parking-slot.component';
+import { UpdateParkingSlotModalComponent } from './add/components/update-parking-slot-modal/update-parking-slot-modal.component';
+import { ParkingSlotService } from 'src/app/services/parking-slot.service';
 @NgModule({
-  declarations: [SearchComponent, AddComponent, ActionIconMenuComponent, ParkingSlotFormComponent],
+  declarations: [SearchComponent, AddComponent, ActionIconMenuComponent, TableParkingSlotComponent, UpdateParkingSlotModalComponent],
   imports: [
     ParkingRoutingModule,
     CommonModule,
@@ -35,10 +38,12 @@ import { ParkingSlotFormComponent } from './add/components/parking-slot-form/par
     MatDialogModule,
     MatMenuModule,
     MatIconModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatRadioModule,
   ],
   providers:[
-    ParkingService
+    ParkingService,
+    ParkingSlotService
   ]
 })
 export class ParkingModule { }

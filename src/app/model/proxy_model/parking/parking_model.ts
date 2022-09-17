@@ -22,7 +22,6 @@ export interface ParkingModel{
     ParkingPhone: string,
     Status: number,
     StatusDisplay: string,
-    ParkingTypes: number[],
     ActionRoles: ParkingActionRoles
 }
 
@@ -115,9 +114,11 @@ export interface ParkingDetailModel {
 }
 
 export interface ParkingDetailSlotModel {
+    Id: number,
     Type: number,
     TotalSlot?: number,
     Price: number
+    TypeDisplay: string
 }
 
 export interface UpdateParkingRequest {
