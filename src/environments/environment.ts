@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  parking_url: "http://localhost:1323"
+  parking_url: "https://parkvn.duckdns.org",
+  vapid_firebase_key : "BHpoMuyryGyI4iuyARErWz59N1Om5Rdz3BE6IyELP1okL5YPHNsEbJM8AzKnrjNypF2vIsZcSRqtJaMjI0ZOlUc"
 };
 
 /*

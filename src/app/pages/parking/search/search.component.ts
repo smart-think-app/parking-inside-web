@@ -9,8 +9,9 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogData } from 'src/app/model/component_model/alert_dialog_data';
 import { ParkingAlertDialog } from 'src/app/core/components/alert_dialog/alert_dialog.component';
-
-
+import { initializeApp } from "firebase/app";
+import { getMessaging,getToken,onMessage    } from "firebase/messaging";
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-search',
@@ -57,6 +58,37 @@ export class SearchComponent implements OnInit {
   clearSelectAll() {
     this.selection.clear()
   }
+  initFcmToken() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkg5rrqmC7kV4DK-Og_wk2tCR5uLrCwGk",
+      authDomain: "parking-4292e.firebaseapp.com",
+      projectId: "parking-4292e",
+      storageBucket: "parking-4292e.appspot.com",
+      messagingSenderId: "460591389535",
+      appId: "1:460591389535:web:90a4e9d6bf112f644f74ea",
+      measurementId: "G-1W0Z34FJW2"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+    getToken(messaging, { vapidKey: environment.vapid_firebase_key}).then((currentToken) => {
+      if (currentToken) {
+        console.log("fcm_token")
+        console.log(currentToken)
+      } else {
+        // Show permission request UI
+        console.log('No registration token available. Request permission to generate one.');
+        // ...
+      }
+    }).catch((err) => {
+      console.log('An error occurred while retrieving token. ', err);
+      // ...
+    });
+    onMessage(messaging, (payload) => {
+      console.log('Message received. ', payload);
+      // ...
+    });
+  }
 
   /** The label for the checkbox on the passed row */
   checkboxLabel(row?: ParkingModel): string {
@@ -77,6 +109,7 @@ export class SearchComponent implements OnInit {
       this.dataSource.data = this.parkingPaging.Parks
     })
     this.initPaging()
+    this.initFcmToken()
   }
 
   initPaging() {
